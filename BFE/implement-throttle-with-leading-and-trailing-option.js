@@ -1,20 +1,25 @@
 
+
 // This is a JavaScript coding problem from BFE.dev 
 
 /**
- * @param {(...args:any[]) => any} func
+ * @param {(...args: any[]) => any} func
  * @param {number} wait
- * @returns {(...args:any[]) => any}
+ * @param {boolean} option.leading
+ * @param {boolean} option.trailing
+ * @returns {(...args: any[]) => any}
  */
-function throttle(func, wait) {
+function throttle(func, wait, option = { leading: true, trailing: true }) {
   let waiting = false, lastArgs = null;
-  return function(...args){
-    if(!waiting){
-      func.apply(this, args)
+  return function (...args) {
+    if (!waiting) {
+      if (option.leading) {
+        func.apply(this, args)
+      }
       waiting = true;
       let timeout = () => setTimeout(() => {
         waiting = false;
-        if(lastArgs){
+        if (lastArgs && option.trailing) {
           func.apply(this, lastArgs);
           waiting = true;
           lastArgs = null;
@@ -23,7 +28,8 @@ function throttle(func, wait) {
       }, wait);
       timeout();
     }
-    else 
+    else {
       lastArgs = args
+    }
   }
 }
